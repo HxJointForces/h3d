@@ -6,10 +6,10 @@ class Label extends Component {
 	
 	public var text(default, set) : String;
 	
-	public function new(text, ?parent) {
+	public function new(?text, ?parent) {
 		super("label",parent);
 		tf = new h2d.Text(null, this);
-		this.text = text;
+		this.text = text != null ? text : "";
 	}
 
 	function get_text() {

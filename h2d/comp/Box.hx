@@ -1,11 +1,24 @@
 package h2d.comp;
+import h2d.css.Defs.Layout;
 
 class Box extends Component {
 	
 	public function new(?layout,?parent) {
 		super("box", parent);
 		if( layout == null ) layout = h2d.css.Defs.Layout.Inline;
-		addClass(":"+layout.getName().toLowerCase());
+		this.layout = layout;
+	}
+	
+	public var layout(get, set):Layout;
+	
+	function get_layout() {
+		return style.layout;
+	}
+	
+	function set_layout(v:Layout):Layout {
+		if (customStyle == null) customStyle = new h2d.css.Style();
+		customStyle.layout = v;
+		return v;
 	}
 	
 	override function resizeRec( ctx : Context ) {

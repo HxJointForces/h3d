@@ -7,7 +7,7 @@ class Button extends Component {
 	
 	public var text(default, set) : String;
 	
-	public function new(text, ?parent) {
+	public function new(?text, ?parent) {
 		super("button",parent);
 		input = new h2d.Interactive(0, 0, bg);
 		var active = false;
@@ -36,7 +36,7 @@ class Button extends Component {
 	
 	function set_text(t) {
 		needRebuild = true;
-		return text = t;
+		return text = t != null ? t : "";
 	}
 	
 	override function resize( ctx : Context ) {

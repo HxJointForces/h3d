@@ -9,7 +9,13 @@ class Component extends Sprite {
 	public var parentComponent(default, null) : Component;
 	public var classes(default, set) : Array<String>;
 	@hxmrDefaultProperty public var children(never, set):Array<Sprite>;
+	public var inlineCss(never, set):String;
 	var components : Array<Component>;
+	
+	function set_inlineCss(s:String):String {
+		addCss(s);
+		return s;
+	}
 	
 	var bg : h2d.css.Fill;
 	// the total width and height (includes margin,borders and padding)
