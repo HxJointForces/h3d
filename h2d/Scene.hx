@@ -304,7 +304,7 @@ class Scene extends Layers implements h3d.IDrawable {
 	@:allow(h2d)
 	function addEventTarget(i) {
 		// latest added gets priority
-		interactive.unshift(i);
+		interactive.push(i);
 	}
 	
 	@:allow(h2d)

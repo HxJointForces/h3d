@@ -1,12 +1,14 @@
 package h2d.comp;
 import h2d.css.Defs;
+import h2d.Sprite;
 
 class Component extends Sprite {
 	
 	public var name(default, null) : String;
 	public var id(default, set) : String;
 	public var parentComponent(default, null) : Component;
-	var classes : Array<String>;
+	public var classes(default, set) : Array<String>;
+	@hxmrDefaultProperty public var children(never, set):Array<Sprite>;
 	var components : Array<Component>;
 	
 	var bg : h2d.css.Fill;
@@ -27,6 +29,11 @@ class Component extends Sprite {
 		components = [];
 		bg = new h2d.css.Fill(this);
 		needRebuild = true;
+	}
+	
+	function set_children(v:Array<Sprite>):Array<Sprite> {
+		for (c in v) addChild(c);
+		return childs;
 	}
 	
 	public function getElementById(id:String) {
@@ -93,6 +100,12 @@ class Component extends Sprite {
 		customStyle = s;
 		needRebuild = true;
 		return this;
+	}
+	
+	function set_classes(v:Array<String>):Array<String> {
+		classes = if (v != null) v; else [];
+		needRebuild = true;
+		return classes;
 	}
 	
 	public function addStyle(s) {
