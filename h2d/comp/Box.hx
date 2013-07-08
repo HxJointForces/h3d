@@ -5,19 +5,23 @@ class Box extends Component {
 	
 	public function new(?layout,?parent) {
 		super("box", parent);
-		if( layout == null ) layout = h2d.css.Defs.Layout.Inline;
-		this.layout = layout;
+		this.layout = layout != null ? layout : h2d.css.Defs.Layout.Inline;
 	}
 	
 	public var layout(get, set):Layout;
 	
 	function get_layout() {
-		return customStyle.layout != null ? customStyle.layout : style.layout;
+		return 
+			if (customStyle != null && customStyle.layout != null)
+				customStyle.layout
+			else 
+				style.layout;
 	}
 	
 	function set_layout(v:Layout):Layout {
 		if (customStyle == null) customStyle = new h2d.css.Style();
 		customStyle.layout = v;
+		needRebuild = true;
 		return v;
 	}
 	
