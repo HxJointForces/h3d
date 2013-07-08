@@ -12,7 +12,7 @@ class Box extends Component {
 	public var layout(get, set):Layout;
 	
 	function get_layout() {
-		return style.layout;
+		return customStyle.layout != null ? customStyle.layout : style.layout;
 	}
 	
 	function set_layout(v:Layout):Layout {
