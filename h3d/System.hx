@@ -16,7 +16,9 @@ class System {
 	public static var isTouch(get,never) : Bool;
 	public static var isWindowed(get,never) : Bool;
 	
-	public static var isAndroid(get,never) : Bool;
+	public static var isAndroid(get, never) : Bool;
+	
+	public static var screenDPI(get,never) : Float;
 
 	static function get_isWindowed() {
 		var p = flash.system.Capabilities.playerType;
@@ -41,18 +43,29 @@ class System {
 		return flash.system.Capabilities.manufacturer.indexOf('Android') != -1;
 	}
 	
+	static function get_screenDPI() {
+		return flash.system.Capabilities.screenDPI;
+	}
+	
 	static var loop = null;
 	
 	public static function setLoop( f : Void -> Void ) {
 		if( loop != null )
 			flash.Lib.current.removeEventListener(flash.events.Event.ENTER_FRAME, loop);
-		loop = function(_) f();
-		flash.Lib.current.addEventListener(flash.events.Event.ENTER_FRAME, loop);
+		if( f == null )
+			loop = null;
+		else {
+			loop = function(_) f();
+			flash.Lib.current.addEventListener(flash.events.Event.ENTER_FRAME, loop);
+		}
 	}
 
+	static function isAir() {
+		return flash.system.Capabilities.playerType == "Desktop";
+	}
+	
 	public static function exit() {
-		var isAir = flash.system.Capabilities.playerType == "Desktop";
-		if( isAir ) {
+		if( isAir() ) {
 			var d : Dynamic = flash.Lib.current.loaderInfo.applicationDomain.getDefinition("flash.desktop.NativeApplication");
 			Reflect.field(Reflect.field(d,"nativeApplication"),"exit")();
 		} else
@@ -67,6 +80,35 @@ class System {
 		case TextInput: "ibeam";
 		}
 	}
+		
+
+	/**
+		Returns the device name:
+			"PC" for a desktop computer
+			Or the android device name
+			(will add iPad/iPhone/iPod soon)
+	**/
+	static var CACHED_NAME = null;
+	public static function getDeviceName() {
+		if( CACHED_NAME != null )
+			return CACHED_NAME;
+		var name;
+		if( isAndroid && isAir() ) {
+			try {
+				var f : Dynamic = Type.createInstance(flash.Lib.current.loaderInfo.applicationDomain.getDefinition("flash.filesystem.File"), ["/system/build.prop"]);
+				var fs : flash.utils.IDataInput = Type.createInstance(flash.Lib.current.loaderInfo.applicationDomain.getDefinition("flash.filesystem.FileStream"), []);
+				Reflect.callMethod(fs, Reflect.field(fs, "open"), [f, "read"]);
+				var content = fs.readUTFBytes(fs.bytesAvailable);
+				name = StringTools.trim(content.split("ro.product.model=")[1].split("\n")[0]);
+			} catch( e : Dynamic ) {
+				name = "Android";
+			}
+		} else
+			name = "PC";
+		CACHED_NAME = name;
+		return name;
+	}
+	
 
 	#end
 	
